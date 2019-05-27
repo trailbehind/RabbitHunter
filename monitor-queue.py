@@ -112,7 +112,7 @@ if __name__ == "__main__":
         elif elapsed > timeout:
             logging.info("Timeout exceeded, terminating")
             terminate(False)
-            sys.exit(0)
+            sys.exit(-1)
         else:
             logging.debug("Sleeping")
             sleep(sleep_interval)
