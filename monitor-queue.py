@@ -41,8 +41,6 @@ if __name__ == "__main__":
         "rabbitmq_management_host",
         "rabbitmq_management_user",
         "rabbitmq_management_password",
-        "ECS_CLUSTER",
-        "TASK_DEFINITION_NAME",
     ):
         if key not in os.environ:
             logging.error("Required environment variable %s not definied" % key)
