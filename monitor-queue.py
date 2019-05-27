@@ -4,10 +4,7 @@ import os
 import sys
 from time import sleep
 
-import boto3
 from pyrabbit.api import Client
-
-ecs_client = boto3.client("ecs", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 
 
 def get_queue_depths(host, username, password, vhost):
@@ -21,42 +18,6 @@ def get_queue_depths(host, username, password, vhost):
             continue
         depths[queue] = cl.get_queue_depth(vhost, queue)
     return depths
-
-
-def get_task_arn(cluster_name, task_definition_name):
-    # get ARN from task definition name
-    task_definition = ecs_client.describe_task_definition(
-        taskDefinition=task_definition_name
-    )["taskDefinition"]
-    task_definition_arn = task_definition["taskDefinitionArn"]
-    logging.debug("Found task definition ARN:%s" % task_definition_arn)
-
-    # Get ARN of running task
-    running_task_arns = ecs_client.list_tasks(cluster=cluster_name)["taskArns"]
-    for task_arn in running_task_arns:
-        response = ecs_client.describe_tasks(cluster=cluster_name, tasks=[task_arn])
-        for task in response["tasks"]:
-            if task["taskDefinitionArn"] == task_definition_arn:
-                return task["taskArn"]
-
-
-def terminate_task(cluster, task_arn, reason):
-    logging.info(
-        "terminating task cluster:%s arn:%s reason:%s" % (cluster, task_arn, reason)
-    )
-    response = ecs_client.stop_task(cluster=cluster, task=task_arn, reason=reason)
-
-
-def terminate(success):
-    cluster_name = os.environ.get("ECS_CLUSTER")
-    task_definition_name = os.environ.get("TASK_DEFINITION_NAME")
-    task_arn = get_task_arn(cluster_name, task_definition_name)
-    if task_arn:
-        terminate_task(
-            cluster_name, task_arn, "Queue drained" if success else "Timeout"
-        )
-    else:
-        logging.error("Running task not found")
 
 
 def configure_logging():
@@ -105,13 +66,11 @@ if __name__ == "__main__":
         if queue_had_messages == False and message_count > 0:
             logging.info("Found messages in queue")
             queue_had_messages = True
-        elif queue_had_messages and message_count <= 0:
-            logging.info("Queue has drained, terminating")
-            terminate(True)
+        elif queue_had_messages and message_count <= 86755:
+            logging.info("Queue has drained, exiting")
             sys.exit(0)
         elif elapsed > timeout:
-            logging.info("Timeout exceeded, terminating")
-            terminate(False)
+            logging.info("Timeout exceeded, exiting")
             sys.exit(-1)
         else:
             logging.debug("Sleeping")
