@@ -64,7 +64,7 @@ if __name__ == "__main__":
         if queue_had_messages == False and message_count > 0:
             logging.info("Found messages in queue")
             queue_had_messages = True
-        elif queue_had_messages and message_count <= 86755:
+        elif queue_had_messages and message_count <= 0:
             logging.info("Queue has drained, exiting")
             sys.exit(0)
         elif elapsed > timeout:
