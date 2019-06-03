@@ -3,7 +3,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 #install prerequisites
 RUN apt-get -q update && \
-    apt-get -q -y install python3 python3-pip && \
+    apt-get -q -y install python3 python3-pip git && \
     apt-get clean && \
     rm -rf /var/lib/apt/ /var/cache/apt/ /var/cache/debconf/
 

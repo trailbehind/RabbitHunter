@@ -8,7 +8,7 @@ from pyrabbit.api import Client
 
 
 def get_queue_depths(host, username, password, vhost):
-    cl = Client(host, username, password)
+    cl = Client(host + "/api/", username, password)
     if not cl.is_alive():
         raise Exception("Failed to connect to rabbitmq")
     depths = {}
