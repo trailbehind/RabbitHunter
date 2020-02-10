@@ -68,7 +68,9 @@ if __name__ == "__main__":
             logging.info("Queue has drained, exiting")
             sys.exit(0)
         elif elapsed > timeout:
-            logging.info("Timeout exceeded, exiting")
+            logging.info(
+                "Timeout exceeded, exiting. %i messages in queue." % message_count
+            )
             sys.exit(-1)
         else:
             logging.debug("Sleeping")
