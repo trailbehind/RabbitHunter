@@ -19,3 +19,4 @@ All configuration is through environment variables.
 - `rabbitmq_vhost` - RabbitMQ vhost, default is `/`
 - `SLEEP_INTERVAL` - Number of seconds between polling rabbitMQ. Default is `15`.
 - `TIMEOUT` - Automatically terminate if queue is not drained after `TIMEOUT` seconds. Default is 172800, which is 2 days.
+- `DEBUG` - enable more logging. This will log message count after each sleep interval.

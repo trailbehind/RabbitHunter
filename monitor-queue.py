@@ -26,13 +26,16 @@ def configure_logging():
         format="%(asctime)s - %(message)s",
         datefmt="%H:%M:%S",
     )
+    # Turn down boto logging
     logging.getLogger(
         "botocore.vendored.requests.packages.urllib3.connectionpool"
     ).setLevel(logging.WARNING)
+    logging.getLogger("botocore.credentials").setLevel(logging.WARNING)
+    # Turn down pyrabbit logging
     logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(
         logging.WARNING
     )
-    logging.getLogger("botocore.credentials").setLevel(logging.WARNING)
+    logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
 
 if __name__ == "__main__":
