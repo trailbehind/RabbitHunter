@@ -2,6 +2,7 @@
 import logging
 import os
 import sys
+from datetime import datetime
 from time import sleep
 
 from pyrabbit.api import Client
@@ -49,6 +50,8 @@ if __name__ == "__main__":
             logging.error("Required environment variable %s not definied" % key)
             sys.exit(-1)
 
+    start = datetime.now()
+
     sleep_interval = int(
         os.environ.get("SLEEP_INTERVAL", 15)
     )  # check often in case things finish quickly
@@ -63,16 +66,19 @@ if __name__ == "__main__":
             os.environ.get("rabbitmq_vhost", "/"),
         )
         message_count = sum(depths.values())
+        elapsed = datetime.now() - start
         logging.debug("Message count: %i" % message_count)
         if queue_had_messages == False and message_count > 0:
-            logging.info("Found messages in queue")
+            logging.info("Found messages in queue after {}".format(elapsed))
             queue_had_messages = True
         elif queue_had_messages and message_count <= 0:
-            logging.info("Queue has drained, exiting")
+            logging.info("Queue has drained, exiting. Total runtime {}".format(elapsed))
             sys.exit(0)
         elif elapsed > timeout:
             logging.info(
-                "Timeout exceeded, exiting. %i messages in queue." % message_count
+                "Timeout exceeded, exiting. {} messages still in queue after {}".format(
+                    message_count, elapsed
+                )
             )
             sys.exit(-1)
         else:
