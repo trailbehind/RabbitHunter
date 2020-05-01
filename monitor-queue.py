@@ -74,7 +74,7 @@ if __name__ == "__main__":
         elif queue_had_messages and message_count <= 0:
             logging.info("Queue has drained, exiting. Total runtime {}".format(elapsed))
             sys.exit(0)
-        elif elapsed > timeout:
+        elif elapsed.total_seconds() > timeout:
             logging.info(
                 "Timeout exceeded, exiting. {} messages still in queue after {}".format(
                     message_count, elapsed
