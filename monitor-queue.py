@@ -84,4 +84,3 @@ if __name__ == "__main__":
         else:
             logging.debug("Sleeping")
             sleep(sleep_interval)
-            elapsed += sleep_interval
